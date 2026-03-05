@@ -1,0 +1,42 @@
+# fly.toml
+app = "flashbot-arbitrage"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  LOG_LEVEL = "info"
+  PORT = "8080"
+  
+  # Network Selection
+  NETWORK = "ETH"
+  
+  # Bot Settings
+  SCAN_INTERVAL_MS = "1000"
+  MAX_GAS_PRICE_GWEI = "50"
+  
+  # Auto-Withdrawal
+  AUTO_WITHDRAW_ENABLED = "true"
+  MIN_WITHDRAW_ETH = "0.05"
+  WITHDRAW_INTERVAL_HOURS = "1"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  memory = "2gb"
+  cpu_kind = "shared"
+  cpus = 2
+
+[[services.http_checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"
+  method = "get"
+  path = "/health"
