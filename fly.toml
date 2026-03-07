@@ -2,13 +2,9 @@
 app = 'flash-loan-bot-31'
 primary_region = 'iad'
 
-# --- MODIFIED BUILD SECTION ---
-# This tells Fly.io to run 'npm run build' BEFORE the Docker build starts
 [build]
   dockerfile = "Dockerfile"
-  # This build command runs in the builder environment before Docker
   build-command = "npm run build"
-# -----------------------------
 
 [http_service]
   internal_port = 8080
@@ -19,10 +15,6 @@ primary_region = 'iad'
   processes = ['app']
 
 [[vm]]
-  # Note: Your file has conflicting memory settings. Keep the one you prefer.
-  # Option A: Use 1GB (remove the line below)
-  # memory = '1gb'
-  # Option B: Use 256MB (keep this line, remove the one above)
-  memory_mb = 256
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
