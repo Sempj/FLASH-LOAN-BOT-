@@ -1,8 +1,8 @@
+# Flash Loan Bot 31
 
-# Flashbot Arbitrage Bot
+Flashbot arbitrage bot deployed on Fly.io
 
-## Deploy on Fly.io in 2 Minutes
+## Deploy
 
-### 1. Install Fly CLI
 ```bash
-curl -L https://fly.io/install.sh | sh
+flyctl deploy
