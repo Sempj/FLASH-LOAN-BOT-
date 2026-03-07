@@ -1,34 +1,23 @@
-# Dockerfile - Fixed version with build inside
-FROM node:18-alpine AS builder
+# Dockerfile
+FROM node:18-alpine
 
-# Install dumb-init
 RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
-# Copy all source files
+# Copy package files
 COPY package*.json ./
 COPY tsconfig.json ./
+
+# Install dependencies and build
+RUN npm install && npm run build
+
+# Copy source and healthcheck
 COPY src/ ./src/
 COPY healthcheck.js ./
 
-# Install ALL dependencies (including dev) and build
-RUN npm install
-RUN npm run build
-
-# Production stage
-FROM node:18-alpine
-
-# Install dumb-init
-RUN apk add --no-cache dumb-init
-
-WORKDIR /app
-
-# Copy from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/healthcheck.js ./
-COPY package*.json ./
+# Ensure dist exists (it should from build)
+RUN ls -la dist/ && ls -la
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
@@ -39,7 +28,7 @@ USER nodejs
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD node healthcheck.js
 
 ENTRYPOINT ["dumb-init", "--"]
