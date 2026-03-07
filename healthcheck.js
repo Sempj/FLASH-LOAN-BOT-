@@ -1,4 +1,3 @@
-// healthcheck.js - For Fly.io
 const http = require('http');
 
 const options = {
