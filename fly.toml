@@ -1,42 +1,28 @@
-# fly.toml
-app = "flashbot-arbitrage"
-primary_region = "iad"
+# fly.toml app configuration file
+app = 'flash-loan-bot-31'
+primary_region = 'iad'
 
+# --- MODIFIED BUILD SECTION ---
+# This tells Fly.io to run 'npm run build' BEFORE the Docker build starts
 [build]
   dockerfile = "Dockerfile"
-
-[env]
-  NODE_ENV = "production"
-  LOG_LEVEL = "info"
-  PORT = "8080"
-  
-  # Network Selection
-  NETWORK = "ETH"
-  
-  # Bot Settings
-  SCAN_INTERVAL_MS = "1000"
-  MAX_GAS_PRICE_GWEI = "50"
-  
-  # Auto-Withdrawal
-  AUTO_WITHDRAW_ENABLED = "true"
-  MIN_WITHDRAW_ETH = "0.05"
-  WITHDRAW_INTERVAL_HOURS = "1"
+  # This build command runs in the builder environment before Docker
+  build-command = "npm run build"
+# -----------------------------
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = false
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
+  min_machines_running = 0
+  processes = ['app']
 
 [[vm]]
-  memory = "2gb"
-  cpu_kind = "shared"
-  cpus = 2
-
-[[services.http_checks]]
-  interval = "30s"
-  timeout = "5s"
-  grace_period = "10s"
-  method = "get"
-  path = "/health"
+  # Note: Your file has conflicting memory settings. Keep the one you prefer.
+  # Option A: Use 1GB (remove the line below)
+  # memory = '1gb'
+  # Option B: Use 256MB (keep this line, remove the one above)
+  memory_mb = 256
+  cpu_kind = 'shared'
+  cpus = 1
