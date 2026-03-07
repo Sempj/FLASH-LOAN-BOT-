@@ -1,23 +1,21 @@
-# Dockerfile
+# Dockerfile - Fixed order
 FROM node:18-alpine
 
 RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
-# Copy package files
+# Copy ALL source files FIRST
 COPY package*.json ./
 COPY tsconfig.json ./
-
-# Install dependencies and build
-RUN npm install && npm run build
-
-# Copy source and healthcheck
 COPY src/ ./src/
 COPY healthcheck.js ./
 
-# Ensure dist exists (it should from build)
-RUN ls -la dist/ && ls -la
+# THEN install and build
+RUN npm install && npm run build
+
+# Verify dist was created
+RUN ls -la dist/
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
