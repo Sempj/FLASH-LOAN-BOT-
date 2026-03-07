@@ -1,11 +1,11 @@
-# Dockerfile - Fixed order
+# Dockerfile - Fixed version
 FROM node:18-alpine
 
 RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
-# Copy ALL source files FIRST
+# Copy ALL files FIRST
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY src/ ./src/
