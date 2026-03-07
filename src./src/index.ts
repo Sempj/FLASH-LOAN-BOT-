@@ -3,7 +3,7 @@ import { FlashbotsBundleProvider } from '@flashbots/ethers-provider-bundle';
 import * as http from 'http';
 
 // ===== HARDCODED CONFIGURATION - MAINNET =====
-const PRIVATE_KEY = process.env.PRIVATE_KEY; // Still from env for security
+const PRIVATE_KEY = process.env.PRIVATE_KEY; // From Fly.io secrets
 const CONTRACT_ADDRESS = '0xc014F34D5Ba10B6799d76b0F5ACdEEe577805085'; // Curve flash loan contract
 const ETH_RPC_URL = 'https://cloudflare-eth.com'; // Free mainnet RPC
 const NETWORK = 'mainnet';
@@ -26,7 +26,7 @@ class FlashbotBot {
   private isRunning = true;
 
   constructor() {
-    // Validate only PRIVATE_KEY is needed now
+    // Validate only PRIVATE_KEY is needed
     this.validateEnvironment();
   }
 
@@ -68,7 +68,7 @@ class FlashbotBot {
         log.warn('⚠️ Low balance! Need ETH for gas');
       }
 
-      // Initialize Flashbots (optional, will fallback to public mempool)
+      // Initialize Flashbots (optional)
       try {
         this.flashbotsProvider = await FlashbotsBundleProvider.create(
           this.provider,
@@ -85,8 +85,8 @@ class FlashbotBot {
         "function startArbitrage(address token, uint256 amount, uint256 expectedProfit) external",
         "function withdrawETH() external",
         "function withdrawToken(address token) external",
-        "function emergencyStop() view returns (bool)",
-        "function owner() view returns (address)"
+        "function emergencyStop() view returns (bool)"
+        // Note: owner() function removed because Curve contract doesn't have it
       ];
 
       this.contract = new ethers.Contract(
@@ -95,13 +95,7 @@ class FlashbotBot {
         this.wallet
       );
 
-      // Check if we can call the contract
-      try {
-        const owner = await this.contract.owner();
-        log.info(`📋 Contract Owner: ${owner}`);
-      } catch (error) {
-        log.warn('⚠️ Cannot fetch contract owner - check address');
-      }
+      // REMOVED: The owner() function call that was crashing the app
 
       // Start services
       this.startHealthServer();
