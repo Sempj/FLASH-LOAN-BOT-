@@ -11,4 +11,15 @@ server.listen(8080, '0.0.0.0', () => {
   console.log('✅ SERVER STARTED on 0.0.0.0:8080');
 });
 
-console.log('🚀 Booting up...');
+console.log('🚀 Booting up...');const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end('OK');
+});
+
+server.listen(8080, '0.0.0.0', () => {
+  console.log('✅ Server listening on 0.0.0.0:8080');
+});
+
+console.log('Starting...');
